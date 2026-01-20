@@ -1,0 +1,100 @@
+{
+    "meta": {
+        "title": "Media-Gen AI — We Create AI Videos for Advertising",
+        "description": "Next-generation AI agency. We create viral advertising Reels for Instagram and TikTok. For real estate developers, restaurants, manufacturers."
+    },
+    "nav": {
+        "home": "Home",
+        "platform": "Platform",
+        "portfolio": "Portfolio",
+        "reviews": "Reviews",
+        "contacts": "Contacts"
+    },
+    "hero": {
+        "title": "We create AI videos that sell your business",
+        "subtitle": "AI-powered advertising Reels for Instagram and TikTok. For real estate developers, restaurants, manufacturers, and any brand.",
+        "description": "Media-Gen AI is a next-generation agency. We create viral short videos that attract customers and boost sales. Fast, creative, affordable.",
+        "ctaOrder": "Order advertising Reels",
+        "ctaCreator": "Become an AI creator"
+    },
+    "business": {
+        "title": "Need Reels for Instagram and TikTok?",
+        "text": "We create professional video content tailored to your brand: from script to finished reel. Real estate, HoReCa, beer production, FMCG — we work with all niches."
+    },
+    "creator": {
+        "title": "Earn with AI creativity",
+        "text": "Join the Media-Gen AI creators team. Get orders from real businesses, work remotely, and monetize your skills."
+    },
+    "platform": {
+        "title": "Coming soon — our own platform",
+        "text": "Automated system for direct interaction between business and AI creators. Post tasks with goals and scripts, receive options, iterate until perfect.",
+        "pageTitle": "Media-Gen Platform — the future of advertising content",
+        "pageText": "The platform will allow businesses to post detailed briefs independently, and AI creators to respond quickly and fulfill orders iteratively. Full control, transparent pricing, high quality. Launching soon!",
+        "comingSoon": "Coming Soon",
+        "features": {
+            "automation": "Order automation",
+            "quality": "High quality",
+            "speed": "Fast execution",
+            "control": "Full control"
+        }
+    },
+    "portfolio": {
+        "title": "Our works",
+        "description": "Examples of AI-generated advertising videos for real clients across industries.",
+        "viewMore": "View all works",
+        "openInstagram": "Open in Instagram",
+        "categories": {
+            "all": "All",
+            "real_estate": "Real Estate",
+            "horeca": "HoReCa",
+            "manufacturing": "Manufacturing",
+            "fmcg": "FMCG",
+            "other": "Other"
+        }
+    },
+    "reviews": {
+        "title": "Client reviews",
+        "comingSoon": "Reviews will appear here soon"
+    },
+    "contacts": {
+        "title": "Contact us",
+        "text": "Get in touch to discuss your project",
+        "whatsapp": "WhatsApp",
+        "instagram": "Instagram",
+        "writeUs": "Write to us"
+    },
+    "forms": {
+        "orderSimple": {
+            "title": "Leave a request for advertising Reels",
+            "name": "Your name",
+            "namePlaceholder": "John Doe",
+            "company": "Company name and Instagram link",
+            "companyPlaceholder": "Romashka LLC, https://instagram.com/romashka",
+            "phone": "Contact phone",
+            "phonePlaceholder": "+7 (___) ___-__-__",
+            "submit": "Submit application"
+        },
+        "creator": {
+            "title": "Become an AI creator",
+            "name": "Your name",
+            "namePlaceholder": "John Doe",
+            "portfolio": "Link to your works or Instagram profile",
+            "portfolioPlaceholder": "https://instagram.com/yourprofile",
+            "phone": "Contact phone",
+            "phonePlaceholder": "+7 (___) ___-__-__",
+            "submit": "Submit application"
+        },
+        "success": "Thank you! Your application has been sent. We will contact you via WhatsApp shortly.",
+        "error": "Please fill in all required fields.",
+        "submitting": "Submitting..."
+    },
+    "footer": {
+        "rights": "All rights reserved",
+        "privacy": "Privacy Policy"
+    },
+    "common": {
+        "learnMore": "Learn more",
+        "back": "Back",
+        "loading": "Loading..."
+    }
+}

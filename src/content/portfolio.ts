@@ -24,12 +24,12 @@ export const portfolioItems: PortfolioItem[] = [
     },
     {
         id: 'reel-2',
-        url: 'https://www.instagram.com/reel/DSswz8BDQ3z/',
-        category: 'horeca',
+        url: 'https://www.instagram.com/reel/DSXF_BljdLE/',
+        category: 'real_estate',
         title: {
-            ru: 'Джон Хэмм одобряет наш продукт',
-            kk: 'Джон Хамм біздің өнімді мақұлдайды  ',
-            en: 'John Hamm approves of our product  ',
+            ru: 'Astana LRT',
+            kk: 'Astana LRT',
+            en: 'Astana LRT',
         },
     },
     {
@@ -74,12 +74,12 @@ export const portfolioItems: PortfolioItem[] = [
     },
     {
         id: 'reel-7',
-        url: 'https://www.instagram.com/reel/DSkZj6RDTjJ/',
-        category: 'manufacturing',
+        url: 'https://www.instagram.com/reel/DSW8_O9DVYy/',
+        category: 'other',
         title: {
-            ru: 'Rise group',
-            kk: 'Rise group',
-            en: 'Rise group',
+            ru: 'Future Home Cinema',
+            kk: 'Future Home Cinema',
+            en: 'Future Home Cinema',
         },
     },
     {

@@ -5,17 +5,44 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations, useLocale } from 'next-intl';
 import { z } from 'zod';
-import { buildWhatsAppUrl } from '@/lib/utils';
+import { buildWhatsAppUrl, WHATSAPP_ORDER } from '@/lib/utils';
 import styles from './OrderSimpleForm.module.css';
 
-// Simplified schema without captcha
+// Validation schema with strict rules
 const orderFormSchema = z.object({
-    name: z.string().min(2, 'Введите имя'),
-    companyInstagram: z.string().min(2, 'Введите название компании'),
-    phone: z.string().min(10, 'Введите телефон'),
+    name: z.string()
+        .min(2, 'Минимум 2 символа')
+        .max(40, 'Максимум 40 символов')
+        .regex(/^[a-zA-Zа-яА-ЯёЁәіңғүұқөһӘІҢҒҮҰҚӨҺ\s\-]+$/, 'Только буквы, пробел и дефис'),
+    companyInstagram: z.string()
+        .min(2, 'Минимум 2 символа')
+        .max(100, 'Максимум 100 символов'),
+    phone: z.string()
+        .regex(/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/, 'Формат: +7 (777) 777-77-77'),
 });
 
 type OrderFormData = z.infer<typeof orderFormSchema>;
+
+// Phone mask helper
+function formatPhoneNumber(value: string): string {
+    // Remove all non-digits except +
+    const digits = value.replace(/[^\d]/g, '');
+
+    // Limit to 11 digits (7 + 10)
+    const limited = digits.slice(0, 11);
+
+    if (limited.length === 0) return '+7 (';
+    if (limited.length <= 1) return `+7 (`;
+    if (limited.length <= 4) return `+7 (${limited.slice(1)}`;
+    if (limited.length <= 7) return `+7 (${limited.slice(1, 4)}) ${limited.slice(4)}`;
+    if (limited.length <= 9) return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}-${limited.slice(7)}`;
+    return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}-${limited.slice(7, 9)}-${limited.slice(9, 11)}`;
+}
+
+// Name filter - only letters, space and hyphen
+function filterName(value: string): string {
+    return value.replace(/[^a-zA-Zа-яА-ЯёЁәіңғүұқөһӘІҢҒҮҰҚӨҺ\s\-]/g, '').slice(0, 40);
+}
 
 export default function OrderSimpleForm() {
     const t = useTranslations('forms');
@@ -26,16 +53,44 @@ export default function OrderSimpleForm() {
     const {
         register,
         handleSubmit,
+        setValue,
+        watch,
         formState: { errors },
     } = useForm<OrderFormData>({
         resolver: zodResolver(orderFormSchema),
+        defaultValues: {
+            phone: '+7 (',
+        },
     });
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhoneNumber(e.target.value);
+        setValue('phone', formatted);
+    };
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const filtered = filterName(e.target.value);
+        setValue('name', filtered);
+    };
 
     const onSubmit = async (data: OrderFormData) => {
         setIsSubmitting(true);
 
         try {
-            // Build WhatsApp message
+            // 1. Send to server (for Telegram notification)
+            await fetch('/api/submit-application', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: data.name,
+                    company: data.companyInstagram,
+                    phone: data.phone,
+                    formType: 'order',
+                    sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
+                }),
+            });
+
+            // 2. Build WhatsApp message
             const messages: Record<string, string> = {
                 ru: `*Новая заявка на рилсы!*\n\nИмя: ${data.name}\nКомпания: ${data.companyInstagram}\nТелефон: ${data.phone}`,
                 kk: `*Рилсқа жаңа өтінім!*\n\nАты: ${data.name}\nКомпания: ${data.companyInstagram}\nТелефон: ${data.phone}`,
@@ -43,17 +98,17 @@ export default function OrderSimpleForm() {
             };
 
             const message = messages[locale] || messages.ru;
-            const whatsappUrl = buildWhatsAppUrl(message);
+            const whatsappUrl = buildWhatsAppUrl(message, WHATSAPP_ORDER);
 
             setIsSuccess(true);
 
-            // Redirect to WhatsApp after short delay
             setTimeout(() => {
                 window.open(whatsappUrl, '_blank');
             }, 1500);
 
         } catch (error) {
             console.error('Form submission error:', error);
+            setIsSuccess(true);
         } finally {
             setIsSubmitting(false);
         }
@@ -64,7 +119,7 @@ export default function OrderSimpleForm() {
             <div className={styles.success}>
                 <div className={styles.successIcon}>✓</div>
                 <p>{t('success')}</p>
-                <a href={`/${locale}`} className="btn btn-secondary" style={{ marginTop: '1.5rem' }}>
+                <a href={`/${locale}`} className="btn btn-secondary" style={{ marginTop: '16px' }}>
                     {locale === 'ru' ? 'На главную' : locale === 'kk' ? 'Басты бетке' : 'Back to Home'}
                 </a>
             </div>
@@ -80,7 +135,9 @@ export default function OrderSimpleForm() {
                     type="text"
                     className="input"
                     placeholder={t('orderSimple.namePlaceholder')}
+                    maxLength={40}
                     {...register('name')}
+                    onChange={handleNameChange}
                 />
                 {errors.name && <span className={styles.error}>{errors.name.message}</span>}
             </div>
@@ -92,6 +149,7 @@ export default function OrderSimpleForm() {
                     type="text"
                     className="input"
                     placeholder={t('orderSimple.companyPlaceholder')}
+                    maxLength={100}
                     {...register('companyInstagram')}
                 />
                 {errors.companyInstagram && <span className={styles.error}>{errors.companyInstagram.message}</span>}
@@ -103,8 +161,9 @@ export default function OrderSimpleForm() {
                     id="phone"
                     type="tel"
                     className="input"
-                    placeholder={t('orderSimple.phonePlaceholder')}
+                    placeholder="+7 (___) ___-__-__"
                     {...register('phone')}
+                    onChange={handlePhoneChange}
                 />
                 {errors.phone && <span className={styles.error}>{errors.phone.message}</span>}
             </div>

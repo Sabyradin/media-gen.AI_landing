@@ -8,6 +8,8 @@
     transition: all var(--transition-base);
     /* Fixed height for consistent card sizes */
     height: 520px;
+    width: 100%;
+    min-width: 0;
 }
 
 .card:hover {

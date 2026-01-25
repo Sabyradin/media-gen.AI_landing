@@ -8,7 +8,8 @@
         "platform": "Platform",
         "portfolio": "Portfolio",
         "reviews": "Reviews",
-        "contacts": "Contacts"
+        "contacts": "Contacts",
+        "faq": "FAQ"
     },
     "hero": {
         "title": "We create AI videos that sell your business",
@@ -96,5 +97,9 @@
         "learnMore": "Learn more",
         "back": "Back",
         "loading": "Loading..."
+    },
+    "faq": {
+        "title": "Frequently Asked Questions",
+        "description": "Answers to questions about AI video, reels, and working with Media-Gen AI"
     }
 }

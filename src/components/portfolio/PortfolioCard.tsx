@@ -25,7 +25,8 @@ export default function PortfolioCard({ item, locale }: PortfolioCardProps) {
                 <span className={styles.title}>
                     {item.title[locale as keyof typeof item.title] || item.title.en}
                 </span>
-                <a
+                {/* Link removed as per request to save space on mobile */}
+                {/* <a
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -37,7 +38,7 @@ export default function PortfolioCard({ item, locale }: PortfolioCardProps) {
                         <polyline points="15 3 21 3 21 9" />
                         <line x1="10" y1="14" x2="21" y2="3" />
                     </svg>
-                </a>
+                </a> */}
             </div>
 
             {/* Instagram Embed - loads immediately */}

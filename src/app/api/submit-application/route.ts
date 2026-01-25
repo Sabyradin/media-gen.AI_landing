@@ -8,6 +8,7 @@ interface ApplicationData {
     portfolioLink?: string;
     sourceUrl?: string;
     formType: 'order' | 'creator';
+    token?: string;
 }
 
 async function sendTelegramMessage(text: string): Promise<boolean> {
@@ -57,6 +58,38 @@ export async function POST(request: NextRequest) {
                 { ok: false, error: 'Missing required fields' },
                 { status: 400 }
             );
+        }
+
+        // Verify Cloudflare Turnstile Token
+        const token = data.token;
+        if (!token) {
+            return NextResponse.json(
+                { ok: false, error: 'CAPTCHA token missing' },
+                { status: 400 }
+            );
+        }
+
+        const secretKey = process.env.CLOUDFLARE_SECRET_KEY;
+        if (secretKey) { // Only verify if secret key is present (skip for dev if needed, or enforce)
+            const formData = new FormData();
+            formData.append('secret', secretKey);
+            formData.append('response', token);
+            formData.append('remoteip', request.ip || '');
+
+            const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+            const result = await fetch(url, {
+                body: formData,
+                method: 'POST',
+            });
+
+            const outcome = await result.json();
+            if (!outcome.success) {
+                console.error('Turnstile verification failed:', outcome);
+                return NextResponse.json(
+                    { ok: false, error: 'CAPTCHA validation failed' },
+                    { status: 400 }
+                );
+            }
         }
 
         // Build Telegram message based on form type

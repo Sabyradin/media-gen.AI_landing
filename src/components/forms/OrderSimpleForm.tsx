@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations, useLocale } from 'next-intl';
 import { z } from 'zod';
 import { buildWhatsAppUrl, WHATSAPP_ORDER } from '@/lib/utils';
+import { Turnstile } from '@marsidev/react-turnstile';
 import styles from './OrderSimpleForm.module.css';
 
 // Validation schema with strict rules
@@ -49,6 +50,7 @@ export default function OrderSimpleForm() {
     const locale = useLocale();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [token, setToken] = useState<string | null>(null);
 
     const {
         register,
@@ -74,11 +76,14 @@ export default function OrderSimpleForm() {
     };
 
     const onSubmit = async (data: OrderFormData) => {
+        if (!token) {
+            return;
+        }
         setIsSubmitting(true);
 
         try {
-            // 1. Send to server (for Telegram notification)
-            await fetch('/api/submit-application', {
+            // 1. Send to server (for Telegram notification) matches what we updated in route.ts
+            const res = await fetch('/api/submit-application', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -87,8 +92,14 @@ export default function OrderSimpleForm() {
                     phone: data.phone,
                     formType: 'order',
                     sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
+                    token: token,
                 }),
             });
+
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || 'Submission failed');
+            }
 
             // 2. Build WhatsApp message
             const messages: Record<string, string> = {
@@ -108,7 +119,8 @@ export default function OrderSimpleForm() {
 
         } catch (error) {
             console.error('Form submission error:', error);
-            setIsSuccess(true);
+            // Alert user on error
+            alert(t('error') || 'Error submitting form. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -168,10 +180,19 @@ export default function OrderSimpleForm() {
                 {errors.phone && <span className={styles.error}>{errors.phone.message}</span>}
             </div>
 
+            {/* Turnstile Widget */}
+            <div className={styles.field} style={{ display: 'flex', justifyContent: 'center', margin: '16px 0' }}>
+                <Turnstile
+                    siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || '1x00000000000000000000AA'}
+                    onSuccess={setToken}
+                    options={{ theme: 'dark' }}
+                />
+            </div>
+
             <button
                 type="submit"
                 className="btn btn-primary btn-lg"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !token}
                 style={{ width: '100%' }}
             >
                 {isSubmitting ? t('submitting') : t('orderSimple.submit')}

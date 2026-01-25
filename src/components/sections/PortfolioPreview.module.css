@@ -23,24 +23,29 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
+    /* 2 columns on mobile as requested */
+    gap: var(--space-3);
+    /* Tighter gap for mobile */
 }
 
 .actions {
     text-align: center;
-    margin-top: var(--space-10);
+    margin-top: var(--space-8);
 }
 
 @media (min-width: 640px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
+        /* 3 columns on tablet */
         gap: var(--space-6);
     }
 }
 
 @media (min-width: 1024px) {
-    .title {
-        font-size: var(--font-size-4xl);
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 columns on desktop */
+        gap: var(--space-8);
     }
 
     .grid {
